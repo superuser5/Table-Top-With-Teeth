@@ -1,0 +1,50 @@
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>REM AtomicRedTeam  
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>REM Run as Administrator  
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>REM signtool.exe used since it allows us to append signatures. Set-Authenticode doesn't appear to.. 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>del /Q package.zip 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>del /Q package_encoded.txt 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>del /Q .\output\* 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>PATH C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;C:\Users\Research\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\Research\AppData\Local\Programs\Python\Python37\;C:\Users\Research\AppData\Local\Microsoft\WindowsApps;C:\Users\Research\AppData\Local\Programs\Fiddler;".\tools";;".\tools";;".\tools"; 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>copy .\payloads\originals\*.* .\output 
+.\payloads\originals\Capcom.sys
+.\payloads\originals\cleanup.bat
+.\payloads\originals\install.bat
+.\payloads\originals\Readme.txt
+        4 file(s) copied.
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>ren .\output\Capcom.sys AtomicRedTeam.sys 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>signtool sign /as /d "description" /du "AtomicRedTeam_Simulation"    /fd SHA256    /f ..\keymaterial\AtomicRedTeam_SPC.pfx    /p atomic    /v .\output\AtomicRedTeam.sys  
+The following certificate was selected:
+    Issued to: AtomicRedTeam_Simulation_SPC
+    Issued by: AtomicRedTeam_Simulation_CA
+    Expires:   Sat Dec 31 16:59:59 2039
+    SHA1 hash: DB84AEB83C006135A740A987185F4297E6E0F1CB
+
+Done Adding Additional Store
+Successfully signed: .\output\AtomicRedTeam.sys
+
+Number of files successfully Signed: 1
+Number of warnings: 0
+Number of errors: 0
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>REM Output Hash Report 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>copy ..\keymaterial\AtomicRedTeam_CA.cer .\output 
+        1 file(s) copied.
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>powershell.exe -File .\hasher.ps1 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>powershell.exe -File .\packer.ps1 
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>del /Q .\output\AtomicRedTeam_*  
+
+C:\users\Research\Documents\_DriverInstallationPackage\builder>powershell.exe -File .\ship.ps1 
